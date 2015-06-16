@@ -1,0 +1,58 @@
+﻿@using Microsoft.Owin.Security
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>Home Page</h2>
+<hr />
+
+<div class="row">
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Exact Token</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" value="@ViewBag.ExactToken"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Dropbox Token</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" value="@ViewBag.DropBoxToken" />
+            </div>
+        </div>
+
+        @{var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes(); }
+        @if (loginProviders != null && loginProviders.Any())
+        {
+
+            using (Html.BeginForm("ExternalLogin", "Home"))
+            {
+                @Html.AntiForgeryToken()
+                foreach (AuthenticationDescription p in loginProviders)
+                {
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        
+        @if (ViewBag.ExactToken != null)
+        {
+            using (Html.BeginForm("CreateDocument", "Home"))
+            {
+                <div class="form-group">
+                    <input type="submit" name="button" class="btn btn-default" value="Create Exact Document" />
+                </div>   
+            }
+        }
+
+
+
+    </div>
+
+</div>
